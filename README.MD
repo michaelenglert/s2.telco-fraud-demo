@@ -35,3 +35,8 @@ CDC In + Pipeline In -> Analytics + Search -> Push out to Kafka  -> Service acti
     * Full text search v2 (JLucene + JSON full text index)
     * Ingest from Iceberg
     * Auto scaling / fast scaling
+
+## Notebook
+[Notebook Link]
+
+[Notebook Link]: https://portal.singlestore.com/organizations/1bf54b61-3069-436a-914c-7779003f0fbd/develop/notebook/d5580703-c940-4150-ba33-cc6ebdb0209f%2F(DMO)%20Telco%20Fraud%20Detection.ipynb
