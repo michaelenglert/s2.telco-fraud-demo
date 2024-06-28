@@ -1,5 +1,5 @@
 CREATE TABLE `usage` (
-    UsageID BIGINT NOT NULL AUTO_INCREMENT,
+    UsageID VARCHAR(50) NOT NULL,
     SIMID VARCHAR(50),
     Location VARCHAR(100),
     UsageType VARCHAR(255),
@@ -12,8 +12,8 @@ CREATE TABLE `usage` (
 
 CREATE TABLE `potential_fraud` (
     FraudID BIGINT NOT NULL AUTO_INCREMENT,
-    UsageID1 BIGINT,
-    UsageID2 BIGINT,
+    UsageID1 VARCHAR(50),
+    UsageID2 VARCHAR(50),
     Timestamp TIMESTAMP(6),
     SHARD KEY (FraudID)
 );
