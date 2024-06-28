@@ -30,11 +30,11 @@ app.get('/potential-frauds', (req, res) => {
   const query = `
     SELECT 
       pf.FraudID as id, 
-      CONCAT('Potential fraud between UsageID ', pf.UsageID1, ' and ', pf.UsageID2) as description,
+      CONCAT('Potential fraud for SIM-ID ', u1.SIMID) as description,
       GREATEST(u1.Timestamp, u2.Timestamp) as date
-    FROM potential_fraud pf
-    JOIN \`usage\` u1 ON pf.UsageID1 = u1.UsageID
-    JOIN \`usage\` u2 ON pf.UsageID2 = u2.UsageID
+      FROM potential_fraud pf
+      JOIN \`usage\` u1 ON pf.UsageID1 = u1.UsageID
+      JOIN \`usage\` u2 ON pf.UsageID2 = u2.UsageID
   `;
   db.query(query, (err, results) => {
     if (err) throw err;
