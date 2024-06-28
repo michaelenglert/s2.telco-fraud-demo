@@ -35,19 +35,19 @@ app.get('/potential-frauds', (req, res) => {
   let query = `
     SELECT 
     pf.FraudID as id, 
-    CONCAT('Potential fraud for user ', BSON_EXTRACT_STRING(tu._more, 'username')) as description,
+    CONCAT('Potential fraud for user ', JSON_EXTRACT_STRING(tu.records, 'username')) as description,
     GREATEST(u1.Timestamp, u2.Timestamp) as date
     FROM potential_fraud pf
     JOIN \`usage\` u1 ON pf.UsageID1 = u1.UsageID
     JOIN \`usage\` u2 ON pf.UsageID2 = u2.UsageID
-    LEFT JOIN \`telco-users\` tu ON u1.SIMID = BSON_EXTRACT_STRING(tu._more, 'sim_id')
+    LEFT JOIN \`telco-users-fts\` tu ON u1.SIMID = JSON_EXTRACT_STRING(tu.records, 'sim_id')
   `;
 
   const queryParams = [];
 
   if (searchTerm) {
-    query += ` WHERE BSON_EXTRACT_STRING(tu._more, 'username') LIKE ?`;
-    queryParams.push(`${searchTerm}%`);
+    query += ` WHERE MATCH (TABLE tu) AGAINST (?)`;
+    queryParams.push(`records:${searchTerm}*`);
   }
 
   query += ` ORDER BY GREATEST(u1.Timestamp, u2.Timestamp) DESC
