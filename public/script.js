@@ -179,6 +179,9 @@ function initCharts() {
                         minute: 'HH:mm'
                     }
                 },
+                grid: {
+                    display: false
+                },
                 title: {
                     display: true,
                     text: 'Time'
@@ -209,8 +212,12 @@ function initCharts() {
             datasets: [{
                 label: 'Potential Frauds',
                 data: [],
-                borderColor: 'rgb(255, 99, 132)',
-                tension: 0.1
+                borderColor: 'rgb(130, 13, 223)',
+                tension: 0.1,
+                fill: {
+                    target: 'origin',
+                    below: 'rgb(130, 13, 223)'
+                }
             }]
         },
         options: {
@@ -231,8 +238,12 @@ function initCharts() {
             datasets: [{
                 label: 'Usage Events',
                 data: [],
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1
+                borderColor: 'rgb(130, 13, 223)',
+                tension: 0.1,
+                fill: {
+                    target: 'origin',
+                    below: 'rgb(130, 13, 223)'
+                }
             }]
         },
         options: {
