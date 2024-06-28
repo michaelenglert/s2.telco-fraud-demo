@@ -1,3 +1,4 @@
+-- Create Procedure to calculate Frauds
 DELIMITER //
 CREATE OR REPLACE PROCEDURE fraud (batch QUERY(
         UsageID VARCHAR(50),
