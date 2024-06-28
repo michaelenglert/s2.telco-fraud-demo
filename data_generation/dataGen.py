@@ -1,5 +1,6 @@
 import csv
 import random
+import uuid
 from datetime import datetime, timedelta
 from geopy.distance import geodesic
 
@@ -44,11 +45,12 @@ def generate_event(sim_id, last_location, last_timestamp):
     usage_type = random.choice(USAGE_TYPES)
     
     event = {
+        'UsageID': str(uuid.uuid4()),  # Generate a random UUID
         'SIMID': sim_id,
         'Location': new_city,
         'UsageType': usage_type,
-        'DataTransferAmount': round(random.uniform(1, 65535), 2) if usage_type == 'Data' else "NULL",
-        'CallDuration': random.randint(1, 360) if usage_type == 'Call' else "NULL",
+        'DataTransferAmount': round(random.uniform(1, 65535), 2) if usage_type == 'Data' else 0,
+        'CallDuration': random.randint(1, 360) if usage_type == 'Call' else 0,
         'Timestamp': current_timestamp.strftime('%Y-%m-%d %H:%M:%S.%f'),
         'Geo': f'POINT({new_location[1]} {new_location[0]})'
     }
@@ -57,7 +59,7 @@ def generate_event(sim_id, last_location, last_timestamp):
 
 def write_csv(filename, events):
     with open(filename, 'w', newline='') as csvfile:
-        fieldnames = ['SIMID', 'Location', 'UsageType', 'DataTransferAmount', 'CallDuration', 'Timestamp', 'Geo']
+        fieldnames = ['UsageID', 'SIMID', 'Location', 'UsageType', 'DataTransferAmount', 'CallDuration', 'Timestamp', 'Geo']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for event in events:
