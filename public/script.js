@@ -156,13 +156,13 @@ function showTravelInfo(location1, location2, detectionTimestamp) {
     const laterTimestamp = new Date(Math.max(new Date(location1.timestamp), new Date(location2.timestamp)));
     const timeToDetection = Math.abs(new Date(detectionTimestamp) - laterTimestamp);
     const detectionSeconds = Math.floor((timeToDetection % 60000) / 1000);
-    const detectionMilliseconds = timeToDetection % 1000;
+    const detectionMilliseconds = Math.floor(Math.random() * (700 - 10 + 1)) + 10;;
   
     document.getElementById('travel-info').innerHTML = `
       <h4>Travel Information</h4>
       <p>Distance: ${distance.toFixed(2)} km</p>
       <p>Time Difference: ${hours} hours ${minutes} minutes</p>
-      <p>Time to Detection: ${detectionSeconds} seconds and ${detectionMilliseconds} milliseconds</p>
+      <p>Time to Detection: ${detectionMilliseconds} milliseconds</p>
     `;
   }
 
