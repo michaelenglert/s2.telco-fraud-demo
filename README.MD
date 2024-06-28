@@ -35,6 +35,9 @@ Pipeline In -> Analytics + Search -> Push out to Kafka  -> Service action + Push
 ## Notebook
 [Notebook Link]
 
+## Demo
+![Demo](./demo.gif)
+
 ## Docker
 ### Build
 * Clone this repository
