@@ -113,3 +113,11 @@ img, svg {
     vertical-align: middle;
     width: 150px;
 }
+
+.marker {
+    cursor: pointer;
+}
+
+.end-marker {
+    transform: translate(-50%, -100%) rotate(-45deg);
+}

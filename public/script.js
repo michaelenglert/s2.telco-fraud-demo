@@ -64,7 +64,7 @@ function loadTravel(fraudId) {
       .catch(error => console.error('Error loading travel data:', error));
   }
 
-function showTravelOnMap(location1, location2) {
+  function showTravelOnMap(location1, location2) {
     if (!map) {
         console.error('Map not initialized');
         return;
@@ -85,21 +85,37 @@ function showTravelOnMap(location1, location2) {
         zoom: 3
     });
 
-    // Remove existing markers and layers
+    // Remove existing markers and route
     document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
     if (map.getLayer('route')) map.removeLayer('route');
     if (map.getSource('route')) map.removeSource('route');
 
-    // Add new markers
-    new mapboxgl.Marker({ color: 'red' })
+    // Create a circle marker for the start point
+    const startMarker = document.createElement('div');
+    startMarker.className = 'marker start-marker';
+    startMarker.style.backgroundColor = '#820DDF';
+    startMarker.style.width = '15px';
+    startMarker.style.height = '15px';
+    startMarker.style.borderRadius = '50%';
+
+    new mapboxgl.Marker(startMarker)
         .setLngLat([lng1, lat1])
         .addTo(map);
 
-    new mapboxgl.Marker({ color: 'blue' })
+    // Create a pin marker for the end point
+    const endMarker = document.createElement('div');
+    endMarker.className = 'marker end-marker';
+    endMarker.style.backgroundColor = '#820DDF';
+    endMarker.style.width = '20px';
+    endMarker.style.height = '20px';
+    endMarker.style.borderRadius = '50% 50% 50% 0';
+    endMarker.style.transform = 'rotate(-45deg)';
+
+    new mapboxgl.Marker(endMarker)
         .setLngLat([lng2, lat2])
         .addTo(map);
 
-    // Add a line between the two points
+    // Add the route line
     map.addSource('route', {
         'type': 'geojson',
         'data': {
@@ -124,8 +140,9 @@ function showTravelOnMap(location1, location2) {
             'line-cap': 'round'
         },
         'paint': {
-            'line-color': '#888',
-            'line-width': 8
+            'line-color': '#820DDF',
+            'line-width': 2,
+            'line-dasharray': [2, 2]
         }
     });
 }
