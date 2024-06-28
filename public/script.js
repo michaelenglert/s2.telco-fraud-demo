@@ -268,20 +268,17 @@ function updateChart(chart, data) {
         y: item.count
     }));
 
-    // Sort the data by time
     chartData.sort((a, b) => a.x - b.x);
 
     const lastEventTime = chartData[chartData.length - 1].x;
     const startTime = moment(lastEventTime).subtract(8, 'hours');
 
-    // Filter data to only include points within the last 8 hours
     const filteredData = chartData.filter(point => point.x >= startTime);
 
     chart.data.datasets[0].data = filteredData;
     chart.options.scales.x.min = startTime.toDate();
     chart.options.scales.x.max = lastEventTime.toDate();
 
-    // Ensure we have at least two data points
     if (filteredData.length < 2) {
         chart.options.scales.x.min = startTime.subtract(1, 'minute').toDate();
         chart.options.scales.x.max = lastEventTime.add(1, 'minute').toDate();
@@ -306,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFrauds();
     initCharts();
     updateAnalytics();
-    setRefreshInterval(5); // Set initial refresh interval to 5 seconds
+    setRefreshInterval(5);
 
     document.getElementById('analytics-tab').addEventListener('shown.bs.tab', () => {
         fraudsChart.resize();
