@@ -1,6 +1,5 @@
 CREATE TABLE `usage` (
     UsageID BIGINT NOT NULL AUTO_INCREMENT,
-    IMEI VARCHAR(50),
     SIMID VARCHAR(50),
     Location VARCHAR(100),
     UsageType VARCHAR(255),
