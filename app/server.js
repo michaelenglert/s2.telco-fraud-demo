@@ -25,20 +25,42 @@ db.connect((err) => {
   console.log('Connected to MySQL database');
 });
 
-// Get all potential frauds
+// Get potential frauds with pagination
 app.get('/potential-frauds', (req, res) => {
-  const query = `
+  const page = parseInt(req.query.page) || 1;
+  const limit = 50;
+  const offset = (page - 1) * limit;
+  const searchTerm = req.query.search || '';
+
+  let query = `
     SELECT 
-      pf.FraudID as id, 
-      CONCAT('Potential fraud for SIM-ID ', u1.SIMID) as description,
-      GREATEST(u1.Timestamp, u2.Timestamp) as date
-      FROM potential_fraud pf
-      JOIN \`usage\` u1 ON pf.UsageID1 = u1.UsageID
-      JOIN \`usage\` u2 ON pf.UsageID2 = u2.UsageID
+    pf.FraudID as id, 
+    CONCAT('Potential fraud for user ', BSON_EXTRACT_STRING(tu._more, 'username')) as description,
+    GREATEST(u1.Timestamp, u2.Timestamp) as date
+    FROM potential_fraud pf
+    JOIN \`usage\` u1 ON pf.UsageID1 = u1.UsageID
+    JOIN \`usage\` u2 ON pf.UsageID2 = u2.UsageID
+    LEFT JOIN \`telco-users\` tu ON u1.SIMID = BSON_EXTRACT_STRING(tu._more, 'sim_id')
   `;
-  db.query(query, (err, results) => {
+
+  const queryParams = [];
+
+  if (searchTerm) {
+    query += ` WHERE BSON_EXTRACT_STRING(tu._more, 'username') LIKE ?`;
+    queryParams.push(`${searchTerm}%`);
+  }
+
+  query += ` ORDER BY GREATEST(u1.Timestamp, u2.Timestamp) DESC
+    LIMIT ? OFFSET ?`;
+
+  queryParams.push(limit, offset);
+
+  db.query(query, queryParams, (err, results) => {
     if (err) throw err;
-    res.json(results);
+    res.json({
+      page: page,
+      frauds: results
+    });
   });
 });
 

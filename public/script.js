@@ -1,5 +1,7 @@
 let map;
 let refreshInterval = 5000; // 5 seconds by default
+let currentPage = 1;
+let hasMoreFrauds = true;
 
 // Fetch the Mapbox token and initialize the map
 fetch('http://localhost:3000/mapbox-token')
@@ -27,13 +29,16 @@ function initMap() {
     });
 }
 
-function loadFrauds() {
-    fetch('http://localhost:3000/potential-frauds')
+function loadFrauds(page = 1) {
+    const searchTerm = document.getElementById('username-search').value;
+    fetch(`http://localhost:3000/potential-frauds?page=${page}&search=${encodeURIComponent(searchTerm)}`)
         .then(response => response.json())
         .then(data => {
             const fraudsList = document.getElementById('frauds-list');
-            fraudsList.innerHTML = '';
-            data.forEach(fraud => {
+            if (page === 1) {
+                fraudsList.innerHTML = '';
+            }
+            data.frauds.forEach(fraud => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${fraud.id}</td>
@@ -43,7 +48,24 @@ function loadFrauds() {
                 row.addEventListener('click', () => loadTravel(fraud.id));
                 fraudsList.appendChild(row);
             });
+
+            hasMoreFrauds = data.frauds.length === 50;
+            updateNextButton();
         });
+}
+
+function updateNextButton() {
+    const nextButton = document.getElementById('next-button');
+    if (hasMoreFrauds) {
+        nextButton.style.display = 'block';
+    } else {
+        nextButton.style.display = 'none';
+    }
+}
+
+function loadNextPage() {
+    currentPage++;
+    loadFrauds(currentPage);
 }
 
 function loadTravel(fraudId) {
@@ -64,7 +86,7 @@ function loadTravel(fraudId) {
       .catch(error => console.error('Error loading travel data:', error));
   }
 
-  function showTravelOnMap(location1, location2) {
+function showTravelOnMap(location1, location2) {
     if (!map) {
         console.error('Map not initialized');
         return;
@@ -79,11 +101,6 @@ function loadTravel(fraudId) {
         console.error('Invalid coordinates');
         return;
     }
-
-    map.flyTo({
-        center: [(lng1 + lng2) / 2, (lat1 + lat2) / 2],
-        zoom: 3
-    });
 
     // Remove existing markers and route
     document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
@@ -144,6 +161,16 @@ function loadTravel(fraudId) {
             'line-width': 2,
             'line-dasharray': [2, 2]
         }
+    });
+
+    // Fit the map to show both points and the line
+    const bounds = new mapboxgl.LngLatBounds()
+        .extend([lng1, lat1])
+        .extend([lng2, lat2]);
+
+    map.fitBounds(bounds, {
+        padding: { top: 50, bottom: 50, left: 50, right: 50 },
+        maxZoom: 15  // Adjust this value if needed
     });
 }
 
@@ -328,7 +355,7 @@ function setRefreshInterval(seconds) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadFrauds();
+    loadFrauds(1);
     initCharts();
     updateAnalytics();
     setRefreshInterval(5);
@@ -336,5 +363,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('analytics-tab').addEventListener('shown.bs.tab', () => {
         fraudsChart.resize();
         usageChart.resize();
+    });
+    const usernameSearch = document.getElementById('username-search');
+    usernameSearch.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            currentPage = 1;
+            loadFrauds(1);
+        }
     });
 });

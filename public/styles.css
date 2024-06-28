@@ -121,3 +121,35 @@ img, svg {
 .end-marker {
     transform: translate(-50%, -100%) rotate(-45deg);
 }
+
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.content-wrapper {
+    flex: 1;
+    padding-bottom: 80px; /* Adjust this value based on your footer height */
+}
+
+.container {
+    margin-bottom: 20px; /* Add some space at the bottom of the container */
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 10px 0;
+    text-align: center;
+}
+
+/* Add this if you want to ensure the button is always visible */
+#next-button {
+    margin-bottom: 20px;
+}
