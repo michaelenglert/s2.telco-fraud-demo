@@ -19,8 +19,8 @@ FIELDS TERMINATED BY ','
 
 TEST PIPELINE loadFrauds LIMIT 2;
 
--- Get Mongo Data
-CREATE LINK mongoTelcoUsers AS MONGODB
+-- Create Mongo Link
+CREATE LINK IF NOT EXISTS mongoTelcoUsers AS MONGODB
 CONFIG '{"mongodb.hosts":"<redacted>:27017",
 "collection.include.list": "telco.telco-users",
 "mongodb.ssl.enabled":"true",
@@ -28,6 +28,7 @@ CONFIG '{"mongodb.hosts":"<redacted>:27017",
 CREDENTIALS '{"mongodb.user":"me",
 "mongodb.password":"<redacted>"}';
 
+-- Use Mongo Link to create the pipeline
 CREATE TABLES AS INFER PIPELINE AS LOAD DATA LINK mongoTelcoUsers '*' FORMAT AVRO;
 
 -- Run Pipelines
